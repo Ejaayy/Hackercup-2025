@@ -9,7 +9,7 @@ function DriverPage() {
             <div id="driverApp" class="main-app">
                 <div class="app-header">
                     <h2>🚗 Driver Dashboard</h2>
-                    <button class="back-btn" onclick={() => navigate(-1)}>← Back</button>
+                    <button class="back-btn" onClick={() => navigate(-1)}>← Back</button>
                 </div>
                 <div class="app-content">
                     <div class="driver-controls">
