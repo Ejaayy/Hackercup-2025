@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './App.css'; // Make sure to create this CSS file
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import DriverPage from './DriverComponents/DriverPage';
-//import CommuterPage from './CommuterPage';
+import CommuterPage from './CommuterComponents/CommuterPage';
 
 
 const DriverButton = ({children, onClick}) => (
@@ -64,7 +64,7 @@ function HomePage() {
 
     const handleCommuterClick = () => {
         console.log('Commuter selected');
-        // Add your navigation logic here
+        navigate('/commuter');
     };
 
     return (
@@ -146,6 +146,7 @@ export default function App(){
             <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/driver" element={<DriverPage />} />
+                <Route path="/commuter" element={<CommuterPage />} />
             </Routes>
         </Router>
     );
