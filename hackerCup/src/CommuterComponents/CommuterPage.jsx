@@ -45,6 +45,13 @@ function CommuterPage() {
           />
 
           <RoutingMachine route={markersDB[selectedRouteKey]} />
+          {userLatitude && userLongitude && (
+          <Marker position={[userLatitude, userLongitude]} icon={PersonIcon}>
+            <Popup>
+              {"Current User Location"}
+            </Popup>
+          </Marker>
+        )}
 
         </MapContainer>
       </div>

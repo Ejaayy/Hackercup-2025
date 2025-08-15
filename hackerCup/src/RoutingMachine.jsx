@@ -16,6 +16,7 @@ function RoutingMachine({ route }) {
 
         const routingControl = L.Routing.control({
             waypoints: route.map(point => L.latLng(point.geocode[0], point.geocode[1])),
+            router: L.Routing.mapbox('pk.eyJ1IjoibmF0aGFuLWRvbG90IiwiYSI6ImNtZWEwa3l6OTB3ZzAycm9yeGQzMGwxaWgifQ.soBFbRBpZLkbfc2WSthFUg'),
             routeWhileDragging: false,
             show: false,
             createMarker: (i, wp) => L.marker(wp.latLng), // default marker
