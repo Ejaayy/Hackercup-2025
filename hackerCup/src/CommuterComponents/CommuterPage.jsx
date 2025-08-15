@@ -93,7 +93,7 @@ function CommuterPage() {
         </div>
     );
 
-  
+
 }
 
 export default CommuterPage;
