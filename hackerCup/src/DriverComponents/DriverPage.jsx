@@ -77,7 +77,7 @@ function AnimatedVehicles({ routeWaypoints, vehicles, setVehicles, routeCoordsRe
 
         return () => clearInterval(interval);
     }, [setVehicles, routeCoordsRef]);
-    
+
     return null;
 }
 
@@ -110,7 +110,7 @@ function DriverPage() {
             // Pick a random point along the route
             const randomIndex = Math.floor(Math.random() * coords.length);
             const base = coords[randomIndex];
-            
+
             // Random small offset in meters (~20m max)
             const offsetLat = (Math.random() - 0.5) * 0.0002;
             const offsetLng = (Math.random() - 0.5) * 0.0002;
@@ -166,7 +166,8 @@ function DriverPage() {
                             <label>🛣️ Current Route</label>
                             <select
                                 value={selectedRouteKey}
-                                onChange={(e) => setSelectedRouteKey(e.target.value)}>
+                                onChange={(e) => setSelectedRouteKey(e.target.value)}
+                            >
                                 {routeOptions.map(r => (
                                     <option key={r.key} value={r.key}>{r.label}</option>
                                 ))}
@@ -183,7 +184,7 @@ function DriverPage() {
                         <div className="filter-group">
                             <label>👥 Passenger Capacity</label>
                             <input type="number" value={vehicleMaxCapacity} min="1" max="50"
-                                onChange={(e)=>setVehicleMaxCapacity(Number(e.target.value))}
+                                   onChange={(e)=>setVehicleMaxCapacity(Number(e.target.value))}
                             />
                         </div>
                         <div className="filter-group">
@@ -208,11 +209,11 @@ function DriverPage() {
                         attribution='&copy; OpenStreetMap &copy; CARTO'
                     />
 
-                    <AnimatedVehicles 
-                        routeWaypoints={markersDB[selectedRouteKey]} 
-                        vehicles={vehicles} 
-                        setVehicles={setVehicles} 
-                        routeCoordsRef={routeCoordsRef} 
+                    <AnimatedVehicles
+                        routeWaypoints={markersDB[selectedRouteKey]}
+                        vehicles={vehicles}
+                        setVehicles={setVehicles}
+                        routeCoordsRef={routeCoordsRef}
                     />
 
                     {vehicles.map(v => (
@@ -240,3 +241,4 @@ function DriverPage() {
 }
 
 export default DriverPage;
+
