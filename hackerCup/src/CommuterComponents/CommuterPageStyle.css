@@ -90,6 +90,10 @@
     outline: none;
 }
 
+option{
+    color: #1d1d1d;
+}
+
 /* Transport Chips */
 .transport-types {
     display: flex;
