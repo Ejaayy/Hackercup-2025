@@ -73,6 +73,29 @@ const getStopIcon = () => L.divIcon({
     iconAnchor: [15, 15],
 });
 
+// Custom user location icon
+const getUserIcon = () => L.divIcon({
+    className: "user-location-icon",
+    html: `<div
+        style="
+            background: #007bff;
+            color: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            font-size: 10px;
+        ">You</div>`,
+    iconSize: [30, 30],
+    iconAnchor: [15, 15],
+});
+
+
 // A component to handle both the routing line and the vehicle animation
 function RouteAndAnimate({ routeWaypoints, vehicles, setVehicles }) {
     const map = useMap();
@@ -180,6 +203,21 @@ function CommuterPage() {
     const [selectedRouteKey, setSelectedRouteKey] = useState(routeOptions[0].key);
     const [vehicles, setVehicles] = useState([]);
     const [filterType, setFilterType] = useState("All");
+    const [userLocation, setUserLocation] = useState(null);
+
+    // Get user's current location when the component mounts
+    useEffect(() => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    setUserLocation([position.coords.latitude, position.coords.longitude]);
+                },
+                (error) => {
+                    console.error("Error getting user location:", error);
+                }
+            );
+        }
+    }, []);
 
     // Initialize vehicles when route changes
     useEffect(() => {
@@ -201,14 +239,9 @@ function CommuterPage() {
         : vehicles.filter(v => v.type === filterType);
 
     const selectedRoute = markersDB[selectedRouteKey];
-    const firstStop = selectedRoute[0];
 
     return (
-
         <div id="commuterApp" className="main-app">
-
-
-                     <div>
             <div className="app-header">
                 <h2>🚌 Commuter Map</h2>
                 <button className="back-btn" onClick={() => navigate(-1)}>← Back</button>
@@ -245,8 +278,6 @@ function CommuterPage() {
                 </div>
 
                 {/* Vehicle Stats Display */}
-                <div>
-
                 <div className="filter-section">
                     <h3>📊 Live Vehicle Status</h3>
                     <div style={{
@@ -266,11 +297,9 @@ function CommuterPage() {
                         </div>
                     </div>
                 </div>
-                </div>
-                        <div>
 
                 <MapContainer
-                    center={selectedRoute[0].geocode}
+                    center={userLocation || selectedRoute[0].geocode}
                     zoom={12}
                     style={{
                         height: "500px",
@@ -290,6 +319,18 @@ function CommuterPage() {
                         vehicles={vehicles}
                         setVehicles={setVehicles}
                     />
+
+                    {/* User Location Marker */}
+                    {userLocation && (
+                        <Marker position={userLocation} icon={getUserIcon()}>
+                            <Popup>
+                                <div style={{ textAlign: 'center' }}>
+                                    <strong>You are here!</strong><br />
+                                    <small>Your current location</small>
+                                </div>
+                            </Popup>
+                        </Marker>
+                    )}
 
                     {/* Vehicle Markers */}
                     {displayedVehicles.map(vehicle => (
@@ -369,12 +410,8 @@ function CommuterPage() {
                         </Marker>
                     ))}
                 </MapContainer>
-
-                </div>
-                </div>
             </div>
         </div>
-
     );
 }
 
