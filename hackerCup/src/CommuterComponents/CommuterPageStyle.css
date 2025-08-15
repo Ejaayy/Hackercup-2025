@@ -130,3 +130,36 @@ h3 {
     color: #e5e7eb;
     font-size: 0.9rem;
 }
+
+/* New: Commuter Controls (dropdowns & selectors) */
+.commuter-controls {
+    background: rgba(255, 255, 255, 0.12);
+    padding: 15px;
+    border-radius: 10px;
+    backdrop-filter: blur(4px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.commuter-controls label {
+    font-weight: 600;
+    color: #f8fafc;
+    margin-bottom: 4px;
+}
+
+.commuter-controls select {
+    padding: 8px;
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 6px;
+    background: rgba(255,255,255,0.15);
+    color: #f8fafc;
+    font-size: 0.95rem;
+    transition: border-color 0.2s ease;
+}
+
+.commuter-controls select:focus {
+    border-color: #93c5fd;
+    outline: none;
+}
