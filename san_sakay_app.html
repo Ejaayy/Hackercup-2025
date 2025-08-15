@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>San Sakay - Smart Commuter Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            padding: 20px 0;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .user-selection {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .user-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .user-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .user-card.active {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .user-card h3 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            color: #667eea;
+        }
+
+        .user-card.active h3 {
+            color: white;
+        }
+
+        .user-card .icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .main-app {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+            overflow: hidden;
+            display: none;
+        }
+
+        .main-app.active {
+            display: block;
+        }
+
+        .app-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: between;
+            align-items: center;
+        }
+
+        .app-content {
+            padding: 30px;
+        }
+
+        .filter-section {
+            margin-bottom: 30px;
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .filter-group {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid transparent;
+            transition: border-color 0.3s ease;
+        }
+
+        .filter-group:focus-within {
+            border-color: #667eea;
+        }
+
+        .filter-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .filter-group select:focus,
+        .filter-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .transport-types {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .transport-chip {
+            padding: 8px 16px;
+            background: #e3f2fd;
+            border: 2px solid #e3f2fd;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .transport-chip:hover,
+        .transport-chip.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .route-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .route-card {
+            background: #f8f9ff;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .route-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.2);
+        }
+
+        .route-card.selected {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .route-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .route-name {
+            font-size: 1.3em;
+            font-weight: 700;
+        }
+
+        .route-type {
+            padding: 5px 12px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 15px;
+            font-size: 0.9em;
+        }
+
+        .route-card:not(.selected) .route-type {
+            background: #667eea;
+            color: white;
+        }
+
+        .route-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .detail-icon {
+            width: 20px;
+            height: 20px;
+            opacity: 0.8;
+        }
+
+        .live-vehicles {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .route-card:not(.selected) .live-vehicles {
+            border-top-color: #ddd;
+        }
+
+        .vehicle-item {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            padding: 8px 0;
+        }
+
+        .vehicle-eta {
+            font-weight: 600;
+            color: #4caf50;
+        }
+
+        .route-card.selected .vehicle-eta {
+            color: #a8ff9f;
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        .status-active { background: #4caf50; }
+        .status-busy { background: #ff9800; }
+        .status-full { background: #f44336; }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #333;
+            border: 2px solid #ddd;
+        }
+
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .back-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 8px 16px;
+            border-radius: 20px;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .driver-controls {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .control-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .passenger-requests {
+            margin-top: 20px;
+        }
+
+        .request-card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .operator-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .dashboard-card {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid #e3f2fd;
+        }
+
+        .dashboard-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .vehicle-status {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .user-selection {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .route-details {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚌 San Sakay</h1>
+            <p>Smart commuting platform connecting passengers, drivers, and transport operators in real-time</p>
+        </div>
+
+        <div id="userSelection" class="user-selection">
+            <div class="user-card" onclick="selectUser('commuter')">
+                <div class="icon">👥</div>
+                <h3>Commuter</h3>
+                <p>Find and track your ride with real-time updates</p>
+            </div>
+            <div class="user-card" onclick="selectUser('driver')">
+                <div class="icon">🚗</div>
+                <h3>Driver</h3>
+                <p>Manage passenger requests and optimize your route</p>
+            </div>
+            <div class="user-card" onclick="selectUser('operator')">
+                <div class="icon">📊</div>
+                <h3>Transport Operator</h3>
+                <p>Monitor fleet performance and route analytics</p>
+            </div>
+        </div>
+
+        <!-- Commuter Interface -->
+        <div id="commuterApp" class="main-app">
+            <div class="app-header">
+                <h2>🚌 Find Your Ride</h2>
+                <button class="back-btn" onclick="goBack()">← Back</button>
+            </div>
+            <div class="app-content">
+                <div class="filter-section">
+                    <div class="filter-grid">
+                        <div class="filter-group">
+                            <label for="pickup">📍 Pick-up Location</label>
+                            <input type="text" id="pickup" placeholder="Enter your starting point" oninput="updateRoutes()">
+                        </div>
+                        <div class="filter-group">
+                            <label for="destination">🎯 Destination (Optional)</label>
+                            <input type="text" id="destination" placeholder="Where are you going?">
+                        </div>
+                        <div class="filter-group">
+                            <label>🚌 Transportation Type</label>
+                            <div class="transport-types">
+                                <div class="transport-chip active" onclick="toggleTransport(this, 'all')">All</div>
+                                <div class="transport-chip" onclick="toggleTransport(this, 'jeepney')">Jeepney</div>
+                                <div class="transport-chip" onclick="toggleTransport(this, 'bus')">Bus</div>
+                                <div class="transport-chip" onclick="toggleTransport(this, 'tricycle')">Tricycle</div>
+                                <div class="transport-chip" onclick="toggleTransport(this, 'rideshare')">Ride Share</div>
+                            </div>
+                        </div>
+                        <div class="filter-group">
+                            <label for="sortBy">📊 Sort By</label>
+                            <select id="sortBy" onchange="sortRoutes()">
+                                <option value="time">Earliest Arrival</option>
+                                <option value="cost">Lowest Cost</option>
+                                <option value="distance">Shortest Distance</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>🛣️ Available Routes</h3>
+                <div id="routeList" class="route-list">
+                    <!-- Routes will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Driver Interface -->
+        <div id="driverApp" class="main-app">
+            <div class="app-header">
+                <h2>🚗 Driver Dashboard</h2>
+                <button class="back-btn" onclick="goBack()">← Back</button>
+            </div>
+            <div class="app-content">
+                <div class="driver-controls">
+                    <div class="control-grid">
+                        <div class="filter-group">
+                            <label>🛣️ Current Route</label>
+                            <select id="driverRoute">
+                                <option>EDSA - Cubao to Makati</option>
+                                <option>Commonwealth Ave</option>
+                                <option>Katipunan Ave</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>👥 Passenger Capacity</label>
+                            <input type="number" id="capacity" value="20" min="1" max="50">
+                        </div>
+                        <div class="filter-group">
+                            <label>📍 Current Status</label>
+                            <select id="driverStatus" onchange="updateDriverStatus()">
+                                <option value="active">🟢 Active</option>
+                                <option value="busy">🟡 Almost Full</option>
+                                <option value="full">🔴 Full</option>
+                                <option value="offline">⚫ Offline</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>🧭 Direction</label>
+                            <select id="direction">
+                                <option>Northbound</option>
+                                <option>Southbound</option>
+                                <option>Eastbound</option>
+                                <option>Westbound</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="passenger-requests">
+                    <h3>📋 Passenger Requests Along Route</h3>
+                    <div id="passengerRequests">
+                        <!-- Passenger requests will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Transport Operator Interface -->
+        <div id="operatorApp" class="main-app">
+            <div class="app-header">
+                <h2>📊 Fleet Management Dashboard</h2>
+                <button class="back-btn" onclick="goBack()">← Back</button>
+            </div>
+            <div class="app-content">
+                <div class="operator-dashboard">
+                    <div class="dashboard-card">
+                        <h3>🚌 Fleet Overview</h3>
+                        <div class="vehicle-status">
+                            <span>Total Vehicles:</span>
+                            <strong>25</strong>
+                        </div>
+                        <div class="vehicle-status">
+                            <span>🟢 Active:</span>
+                            <strong>18</strong>
+                        </div>
+                        <div class="vehicle-status">
+                            <span>🔴 Offline:</span>
+                            <strong>7</strong>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-card">
+                        <h3>📈 Route Performance</h3>
+                        <div class="vehicle-status">
+                            <span>EDSA Route:</span>
+                            <strong>85% Efficiency</strong>
+                        </div>
+                        <div class="vehicle-status">
+                            <span>Commonwealth:</span>
+                            <strong>92% Efficiency</strong>
+                        </div>
+                        <div class="vehicle-status">
+                            <span>Katipunan:</span>
+                            <strong>78% Efficiency</strong>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-card">
+                        <h3>🚗 Vehicle Tracking</h3>
+                        <div id="vehicleList">
+                            <!-- Vehicle list will be populated by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-card">
+                        <h3>📊 Daily Statistics</h3>
+                        <div class="vehicle-status">
+                            <span>Total Passengers:</span>
+                            <strong>1,247</strong>
+                        </div>
+                        <div class="vehicle-status">
+                            <span>Revenue Today:</span>
+                            <strong>₱18,750</strong>
+                        </div>
+                        <div class="vehicle-status">
+                            <span>Avg Wait Time:</span>
+                            <strong>8 minutes</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data
+        const routes = [
+            {
+                id: 1,
+                name: "EDSA - Cubao to Makati",
+                type: "bus",
+                cost: 25,
+                distance: "12.5 km",
+                vehicles: [
+                    { plate: "ABC-123", eta: "3 min", passengers: "8/35", status: "active" },
+                    { plate: "XYZ-789", eta: "7 min", passengers: "15/35", status: "busy" },
+                    { plate: "DEF-456", eta: "12 min", passengers: "2/35", status: "active" }
+                ]
+            },
+            {
+                id: 2,
+                name: "Commonwealth Avenue",
+                type: "jeepney",
+                cost: 12,
+                distance: "8.2 km", 
+                vehicles: [
+                    { plate: "GHI-321", eta: "5 min", passengers: "12/14", status: "busy" },
+                    { plate: "JKL-654", eta: "9 min", passengers: "14/14", status: "full" }
+                ]
+            },
+            {
+                id: 3,
+                name: "Katipunan Avenue",
+                type: "bus",
+                cost: 20,
+                distance: "10.1 km",
+                vehicles: [
+                    { plate: "MNO-987", eta: "2 min", passengers: "5/40", status: "active" },
+                    { plate: "PQR-147", eta: "11 min", passengers: "22/40", status: "busy" }
+                ]
+            },
+            {
+                id: 4,
+                name: "Ortigas Center Loop",
+                type: "tricycle",
+                cost: 30,
+                distance: "3.5 km",
+                vehicles: [
+                    { plate: "STU-258", eta: "1 min", passengers: "1/3", status: "active" },
+                    { plate: "VWX-369", eta: "6 min", passengers: "3/3", status: "full" }
+                ]
+            }
+        ];
+
+        const passengerRequests = [
+            { location: "Cubao MRT Station", destination: "Ayala Avenue", passengers: 2, time: "2 min ago" },
+            { location: "Ortigas Center", destination: "Makati CBD", passengers: 1, time: "5 min ago" },
+            { location: "Shaw Boulevard", destination: "BGC", passengers: 3, time: "1 min ago" },
+            { location: "Guadalupe Bridge", destination: "Ayala Triangle", passengers: 1, time: "3 min ago" }
+        ];
+
+        let selectedTransport = 'all';
+        let currentUser = '';
+
+        function selectUser(userType) {
+            currentUser = userType;
+            document.querySelectorAll('.user-card').forEach(card => card.classList.remove('active'));
+            event.target.closest('.user-card').classList.add('active');
+            
+            setTimeout(() => {
+                document.getElementById('userSelection').style.display = 'none';
+                document.getElementById(userType + 'App').classList.add('active');
+                
+                if (userType === 'commuter') {
+                    updateRoutes();
+                } else if (userType === 'driver') {
+                    updatePassengerRequests();
+                } else if (userType === 'operator') {
+                    updateVehicleList();
+                }
+            }, 300);
+        }
+
+        function goBack() {
+            document.querySelectorAll('.main-app').forEach(app => app.classList.remove('active'));
+            document.getElementById('userSelection').style.display = 'grid';
+            document.querySelectorAll('.user-card').forEach(card => card.classList.remove('active'));
+        }
+
+        function toggleTransport(element, type) {
+            document.querySelectorAll('.transport-chip').forEach(chip => chip.classList.remove('active'));
+            element.classList.add('active');
+            selectedTransport = type;
+            updateRoutes();
+        }
+
+        function updateRoutes() {
+            const pickup = document.getElementById('pickup').value;
+            const routeList = document.getElementById('routeList');
+            
+            let filteredRoutes = routes;
+            
+            if (selectedTransport !== 'all') {
+                filteredRoutes = routes.filter(route => route.type === selectedTransport);
+            }
+            
+            if (pickup) {
+                // Simple search simulation
+                filteredRoutes = filteredRoutes.filter(route => 
+                    route.name.toLowerCase().includes(pickup.toLowerCase())
+                );
+            }
+            
+            routeList.innerHTML = '';
+            
+            filteredRoutes.forEach(route => {
+                const routeCard = document.createElement('div');
+                routeCard.className = 'route-card';
+                routeCard.onclick = () => selectRoute(routeCard);
+                
+                routeCard.innerHTML = `
+                    <div class="route-header">
+                        <div class="route-name">${route.name}</div>
+                        <div class="route-type">${route.type.toUpperCase()}</div>
+                    </div>
+                    <div class="route-details">
+                        <div class="detail-item">
+                            <span class="detail-icon">💰</span>
+                            <span>₱${route.cost}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-icon">📏</span>
+                            <span>${route.distance}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-icon">🚌</span>
+                            <span>${route.vehicles.length} vehicles</span>
+                        </div>
+                    </div>
+                    <div class="live-vehicles">
+                        <strong>Live Vehicles:</strong>
+                        ${route.vehicles.map(vehicle => `
+                            <div class="vehicle-item">
+                                <div>
+                                    <span class="status-indicator status-${vehicle.status}"></span>
+                                    ${vehicle.plate} (${vehicle.passengers})
+                                </div>
+                                <div class="vehicle-eta">${vehicle.eta}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                
+                routeList.appendChild(routeCard);
+            });
+            
+            if (filteredRoutes.length === 0) {
+                routeList.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #666;">
+                        <h3>🔍 No routes found</h3>
+                        <p>Try adjusting your filters or pickup location</p>
+                    </div>
+                `;
+            }
+        }
+
+        function selectRoute(routeCard) {
+            document.querySelectorAll('.route-card').forEach(card => card.classList.remove('selected'));
+            routeCard.classList.add('selected');
+        }
+
+        function sortRoutes() {
+            // Implementation for sorting routes
+            updateRoutes();
+        }
+
+        function updatePassengerRequests() {
+            const requestsContainer = document.getElementById('passengerRequests');
+            
+            requestsContainer.innerHTML = passengerRequests.map(request => `
+                <div class="request-card">
+                    <div style="display: flex; justify-content: between; align-items: center; margin-bottom: 10px;">
+                        <strong>👥 ${request.passengers} passenger${request.passengers > 1 ? 's' : ''}</strong>
+                        <small style="color: #666;">${request.time}</small>
+                    </div>
+                    <div style="margin-bottom: 5px;">
+                        📍 <strong>From:</strong> ${request.location}
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        🎯 <strong>To:</strong> ${request.destination}
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn btn-primary" style="padding: 8px 16px; font-size: 14px;">✅ Accept</button>
+                        <button class="btn btn-secondary" style="padding: 8px 16px; font-size: 14px;">❌ Skip</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateDriverStatus() {
+            const status = document.getElementById('driverStatus').value;
+            console.log('Driver status updated to:', status);
+            // Here you would typically send this to a backend API
+        }
+
+        function updateVehicleList() {
+            const vehicleList = document.getElementById('vehicleList');
+            const allVehicles = routes.flatMap(route => 
+                route.vehicles.map(vehicle => ({
+                    ...vehicle,
+                    route: route.name
+                }))
+            );
+            
+            vehicleList.innerHTML = allVehicles.map(vehicle => `
+                <div class="vehicle-status">
+                    <div>
+                        <span class="status-indicator status-${vehicle.status}"></span>
+                        <strong>${vehicle.plate}</strong>
+                        <br>
+                        <small>${vehicle.route}</small>
+                    </div>
+                    <div style="text-align: right;">
+                        <div>${vehicle.passengers}</div>
+                        <small>${vehicle.eta}</small>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Initialize with sample data when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Simulate real-time updates every 30 seconds
+            setInterval(() => {
+                if (currentUser === 'commuter') {
+                    updateRoutes();
+                } else if (currentUser === 'driver') {
+                    updatePassengerRequests();
+                } else if (currentUser === 'operator') {
+                    updateVehicleList();
+                }
+            }, 30000);
+        });
+    </script>
+</body>
+</html>
