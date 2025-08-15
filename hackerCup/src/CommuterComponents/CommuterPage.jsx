@@ -208,7 +208,7 @@ function CommuterPage() {
         <div id="commuterApp" className="main-app">
 
 
-            <div>
+                     <div>
             <div className="app-header">
                 <h2>🚌 Commuter Map</h2>
                 <button className="back-btn" onClick={() => navigate(-1)}>← Back</button>
@@ -245,7 +245,7 @@ function CommuterPage() {
                 </div>
 
                 {/* Vehicle Stats Display */}
-         <div>
+                <div>
 
                 <div className="filter-section">
                     <h3>📊 Live Vehicle Status</h3>
@@ -266,8 +266,8 @@ function CommuterPage() {
                         </div>
                     </div>
                 </div>
-          </div>
-        <div>
+                </div>
+                        <div>
 
                 <MapContainer
                     center={selectedRoute[0].geocode}
