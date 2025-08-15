@@ -1,10 +1,15 @@
+import './driverPageStyle.css';
+import {useNavigate} from 'react-router-dom';
+
 function DriverPage() {
+    const navigate = useNavigate();
+
     return (
         <>
             <div id="driverApp" class="main-app">
                 <div class="app-header">
                     <h2>🚗 Driver Dashboard</h2>
-                    <button class="back-btn" onclick="goBack()">← Back</button>
+                    <button class="back-btn" onclick={() => navigate(-1)}>← Back</button>
                 </div>
                 <div class="app-content">
                     <div class="driver-controls">
