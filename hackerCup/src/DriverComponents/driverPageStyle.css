@@ -13,6 +13,7 @@
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 1px 6px rgba(0, 0, 0, 0.15);
+    color: #1d1d1d
 }
 
 /* Main container */
@@ -80,7 +81,6 @@
     margin-bottom: 5px;
     color: #f8fafc;
 }
-
 .filter-group select,
 .filter-group input {
     width: 100%;
@@ -96,6 +96,10 @@
 .filter-group input:focus {
     border-color: #93c5fd;
     outline: none;
+}
+
+option{
+    color: #1d1d1d;
 }
 
 /* Passenger Requests Section */
