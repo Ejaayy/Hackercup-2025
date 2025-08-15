@@ -163,10 +163,10 @@ body {
 /* Buttons section */
 .buttons-section {
     display: flex;
-    flex-direction: column;
+    flex-direction: row; /* horizontal now */
     align-items: center;
     justify-content: center;
-    gap: 32px;
+    gap: 32px; /* spacing between buttons */
     padding: 0 16px 64px;
     position: relative;
     z-index: 10;

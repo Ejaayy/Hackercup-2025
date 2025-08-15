@@ -6,7 +6,7 @@ import 'leaflet-routing-machine';
 import RoutingMachine from './../RoutingMachine';
 import L from "leaflet";
 import './CommuterPageStyle.css';
-import carIconImg from './car-icon.png'; // your custom car image
+import carIconImg from '/src/assets/vehicle.png'; // your custom car image
 
 // Define the custom car icon
 const carIcon = L.icon({
