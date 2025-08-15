@@ -3,7 +3,6 @@
     display: flex;
     flex-direction: column;
     height: calc(100vh - 160px); /* adjust based on header + padding */
-
 }
 
 /* Make the map container fill remaining space */
