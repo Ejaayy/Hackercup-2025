@@ -1,0 +1,132 @@
+/* Main container */
+.main-app {
+    font-family: 'Segoe UI', sans-serif;
+    padding: 20px;
+    background: linear-gradient(45deg, #3b82f6, #8b5cf6, #10b981);
+    min-height: 100vh;
+    color: #f8fafc; /* Light text for readability */
+}
+
+/* Header */
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 15px 20px;
+    border-radius: 10px;
+    backdrop-filter: blur(6px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    margin-bottom: 20px;
+    color: #ffffff;
+}
+
+.app-header h2 {
+    margin: 0;
+    font-size: 1.6rem;
+}
+
+/* Back button */
+.back-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: #ffffff;
+    transition: background 0.2s ease;
+}
+.back-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Content Layout */
+.app-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Filter Section */
+.filter-section {
+    background: rgba(255, 255, 255, 0.12);
+    padding: 20px;
+    border-radius: 10px;
+    backdrop-filter: blur(4px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.filter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 15px;
+}
+
+.filter-group label {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 5px;
+    color: #f8fafc;
+}
+
+.filter-group input,
+.filter-group select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 6px;
+    font-size: 0.95rem;
+    background: rgba(255,255,255,0.15);
+    color: #f8fafc;
+    transition: border-color 0.2s ease;
+}
+.filter-group input::placeholder {
+    color: rgba(255,255,255,0.7);
+}
+.filter-group select:focus,
+.filter-group input:focus {
+    border-color: #93c5fd;
+    outline: none;
+}
+
+/* Transport Chips */
+.transport-types {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.transport-chip {
+    background: rgba(255,255,255,0.15);
+    color: #f8fafc;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    user-select: none;
+}
+.transport-chip:hover {
+    background: rgba(255,255,255,0.25);
+}
+.transport-chip.active {
+    background: rgba(255,255,255,0.35);
+    font-weight: bold;
+}
+
+/* Routes Section */
+h3 {
+    margin: 0;
+    color: #f8fafc;
+}
+
+.route-list {
+    padding: 15px;
+    min-height: 120px;
+    background: rgba(255,255,255,0.08);
+    border: 1px dashed rgba(255,255,255,0.3);
+    border-radius: 6px;
+    color: #e5e7eb;
+    font-size: 0.9rem;
+}

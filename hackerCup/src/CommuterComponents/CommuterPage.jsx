@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import './CommuterPageStyle.css';
 
 function CommuterPage() {
     const navigate = useNavigate();
@@ -44,7 +45,7 @@ function CommuterPage() {
 
                     <h3>🛣️ Available Routes</h3>
                     <div id="routeList" className="route-list">
-                     
+
                     </div>
                 </div>
             </div>
