@@ -7,21 +7,20 @@ import 'leaflet-routing-machine';
 import RoutingMachine from './../RoutingMachine';
 
 const markersDB = {
-    mrtSaversRoute: [
-        { geocode: [14.3840, 120.9770], popUp: "SM City Molino, Bacoor, Cavite" },
-        { geocode: [14.530944, 120.993465], popUp: "Simbahan" },
-        { geocode: [14.535965, 120.993143], popUp: "Heritage" },
-        { geocode: [14.536418, 120.999954], popUp: "MRT/LRT Savers" },
+    DLSUtoUST: [
+        { geocode: [14.564098, 120.994498], popUp: "DLSU Manila" },
+        { geocode: [14.607594, 120.990500], popUp: "University of Santo Tomas" },
     ],
-    moaRoute: [
+    SmMolinoToMOA: [
         { geocode: [14.3840, 120.9770], popUp: "SM City Molino, Bacoor, Cavite" },
         { geocode: [14.5353, 120.9822], popUp: "SM Mall of Asia, Pasay City" },
     ]
+
 };
 
 const routeOptions = [
-    { label: "SM MOLINO to LRT1 EDSA", key: "mrtSaversRoute" },
-    { label: "SM MOLINO to PITX", key: "moaRoute" },
+    { label: "DLSU Manila to UST", key: "DLSUtoUST" },
+    { label: "SM MOLINO to PITX", key: "SmMolinoToMOA" },
 ];
 
 function DriverPage() {

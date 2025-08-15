@@ -1,56 +1,55 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './CommuterPageStyle.css';
+import 'leaflet-routing-machine';
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import 'leaflet/dist/leaflet.css';
+import RoutingMachine from './../RoutingMachine';
 
 function CommuterPage() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const [selectedRouteKey, setSelectedRouteKey] = useState("");
 
-    return(
-        <>
-            <div id="commuterApp" className="main-app">
-                <div className="app-header">
-                    <h2>🚌 Find Your Ride</h2>
-                    <button className="back-btn" onClick={() => navigate(-1)}>← Back</button>
-                </div>
-                <div className="app-content">
-                    <div className="filter-section">
-                        <div className="filter-grid">
-                            <div className="filter-group">
-                                <label for="pickup">📍 Pick-up Location</label>
-                                <input type="text" id="pickup" placeholder="Enter your starting point" oninput="updateRoutes()"></input>
-                            </div>
-                            <div className="filter-group">
-                                <label for="destination">🎯 Destination (Optional)</label>
-                                <input type="text" id="destination" placeholder="Where are you going?"></input>
-                            </div>
-                            <div className="filter-group">
-                                <label>🚌 Transportation Type</label>
-                                <div className="transport-types">
-                                    <div className="transport-chip active" onClick="toggleTransport(this, 'all')">All</div>
-                                    <div className="transport-chip" onClick="toggleTransport(this, 'jeepney')">Jeepney</div>
-                                    <div className="transport-chip" onClick="toggleTransport(this, 'bus')">Bus</div>
-                                    <div className="transport-chip" onClick="toggleTransport(this, 'tricycle')">Tricycle</div>
-                                    <div className="transport-chip" onClick="toggleTransport(this, 'rideshare')">Ride Share</div>
-                                </div>
-                            </div>
-                            <div className="filter-group">
-                                <label for="sortBy">📊 Sort By</label>
-                                <select id="sortBy" onChange="sortRoutes()">
-                                    <option value="time">Earliest Arrival</option>
-                                    <option value="cost">Lowest Cost</option>
-                                    <option value="distance">Shortest Distance</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
+  const markersDB = {
+    DLSUtoUST: [
+        { geocode: [14.564098, 120.994498], popUp: "DLSU Manila" },
+        { geocode: [14.607594, 120.990500], popUp: "University of Santo Tomas" },
+    ],
+    SmMolinoToMOA: [
+        { geocode: [14.3840, 120.9770], popUp: "SM City Molino, Bacoor, Cavite" },
+        { geocode: [14.5353, 120.9822], popUp: "SM Mall of Asia, Pasay City" },
+    ]
 
-                    <h3>🛣️ Available Routes</h3>
-                    <div id="routeList" className="route-list">
+};
 
-                    </div>
-                </div>
-            </div>
-        </>
-    )
+  return (
+    <div id="commuterApp" className="main-app">
+      <div className="app-header">
+        <h2>🚌 Find Your Ride</h2>
+        <button className="back-btn" onClick={() => navigate(-1)}>← Back</button>
+      </div>
+
+      <div className="app-content">
+        {/* Example corrected input */}
+        <label htmlFor="pickup">📍 Pick-up Location</label>
+        <input type="text" id="pickup" placeholder="Enter your starting point" />
+
+        <MapContainer 
+          center={[14.5995, 120.9842]} 
+          zoom={13} 
+          style={{ height: "500px", width: "100%" }}
+        >
+          <TileLayer
+            url='https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png'
+            attribution='&copy; OpenStreetMap &copy; CARTO'
+          />
+
+          <RoutingMachine route={markersDB[selectedRouteKey]} />
+
+        </MapContainer>
+      </div>
+    </div>
+  );
 }
 
 export default CommuterPage;
