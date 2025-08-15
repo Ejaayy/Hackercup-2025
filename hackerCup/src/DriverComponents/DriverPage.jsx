@@ -103,8 +103,7 @@ function DriverPage() {
                             <label>🛣️ Current Route</label>
                             <select
                                 value={selectedRouteKey}
-                                onChange={(e) => setSelectedRouteKey(e.target.value)}
-                            >
+                                onChange={(e) => setSelectedRouteKey(e.target.value)}>
                                 {routeOptions.map(r => (
                                     <option key={r.key} value={r.key}>{r.label}</option>
                                 ))}
@@ -113,13 +112,14 @@ function DriverPage() {
                         <div className="filter-group">
                             <label>Vehicle Type</label>
                             <select id="driverStatus">
+                                <option value=""></option>
                                 <option value="Van">Van</option>
                                 <option value="Jeep">Jeep</option>
                             </select>
                         </div>
                         <div className="filter-group">
                             <label>👥 Passenger Capacity</label>
-                            <input type="number" id="capacity" value="20" min="1" max="50" readOnly />
+                            <input type="number" id="capacity" min="1" max="50" required />
                         </div>
                         <div className="filter-group">
                             <label>📍 Current Status</label>
