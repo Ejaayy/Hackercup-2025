@@ -1,3 +1,21 @@
+/* App content layout for map support */
+.app-content {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 160px); /* adjust based on header + padding */
+
+}
+
+/* Make the map container fill remaining space */
+.leaflet-container {
+    flex: 1;
+    height: 100%;
+    width: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
 /* Container */
 .main-app {
     font-family: 'Segoe UI', sans-serif;
