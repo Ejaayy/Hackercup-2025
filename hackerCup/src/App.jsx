@@ -116,10 +116,10 @@ function App() {
 
           {/* Live Stats */}
           <div className="stats-grid">
-            <StatsCard icon="🚗" number="150+" label="Active Drivers" delay={0} />
-            <StatsCard icon="👥" number="2.5K+" label="Daily Commuters" delay={200} />
-            <StatsCard icon="🛣️" number="25+" label="Routes Covered" delay={400} />
-            <StatsCard icon="⭐" number="4.8" label="User Rating" delay={600} />
+            <StatsCard icon="🚗" number="0+" label="Active Drivers" delay={0} />
+            <StatsCard icon="👥" number="0+" label="Daily Commuters" delay={200} />
+            <StatsCard icon="🛣️" number="0+" label="Routes Covered" delay={400} />
+            <StatsCard icon="⭐" number="0" label="User Rating" delay={600} />
           </div>
         </div>
 
