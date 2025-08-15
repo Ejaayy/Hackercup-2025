@@ -46,6 +46,12 @@
 /* Content Layout */
 .app-content {
     display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.options {
+    display: flex;
     flex-direction: column;
     gap: 20px;
 }

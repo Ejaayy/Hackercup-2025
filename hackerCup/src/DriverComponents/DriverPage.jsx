@@ -202,7 +202,7 @@ function DriverPage() {
                 <MapContainer
                     center={markersDB[selectedRouteKey][0].geocode}
                     zoom={13}
-                    style={{ height: "500px", width: "100%" }}
+                    style={{ height: "100%", width: "100%" }}
                 >
                     <TileLayer
                         url='https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png'

@@ -248,61 +248,62 @@ function CommuterPage() {
             </div>
 
             <div className="app-content">
-                <div className="commuter-controls">
-                    <div className="filter-group">
-                        <label>🛣️ Select Route</label>
-                        <select
-                            value={selectedRouteKey}
-                            onChange={(e) => setSelectedRouteKey(e.target.value)}
-                        >
-                            {routeOptions.map(r => (
-                                <option key={r.key} value={r.key}>{r.label}</option>
-                            ))}
-                        </select>
+                <div className="options"> 
+                    <div className="commuter-controls">
+                        <div className="filter-group">
+                            <label>🛣️ Select Route</label>
+                            <select
+                                value={selectedRouteKey}
+                                onChange={(e) => setSelectedRouteKey(e.target.value)}
+                            >
+                                {routeOptions.map(r => (
+                                    <option key={r.key} value={r.key}>{r.label}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div className="filter-group">
+                            <label>🚗 Vehicle Type Filter</label>
+                            <select
+                                value={filterType}
+                                onChange={(e) => setFilterType(e.target.value)}
+                            >
+                                <option value="All">All Vehicles ({vehicles.length})</option>
+                                {vehicleTypes.map(t => (
+                                    <option key={t} value={t}>
+                                        {t} ({vehicles.filter(v => v.type === t).length})
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
                     </div>
 
-                    <div className="filter-group">
-                        <label>🚗 Vehicle Type Filter</label>
-                        <select
-                            value={filterType}
-                            onChange={(e) => setFilterType(e.target.value)}
-                        >
-                            <option value="All">All Vehicles ({vehicles.length})</option>
-                            {vehicleTypes.map(t => (
-                                <option key={t} value={t}>
-                                    {t} ({vehicles.filter(v => v.type === t).length})
-                                </option>
-                            ))}
-                        </select>
+                    {/* Vehicle Stats Display */}
+                    <div className="filter-section">
+                        <h3>📊 Live Vehicle Status</h3>
+                        <div style={{
+                            display: 'grid',
+                            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                            gap: '10px',
+                            marginTop: '10px'
+                        }}>
+                            <div style={{ padding: '8px', background: 'rgba(255,255,255,0.1)', borderRadius: '4px' }}>
+                                Active Vehicles: <strong>{displayedVehicles.length}</strong>
+                            </div>
+                            <div style={{ padding: '8px', background: 'rgba(255,255,255,0.1)', borderRadius: '4px' }}>
+                                Total Passengers: <strong>{displayedVehicles.reduce((sum, v) => sum + v.capacity, 0)}</strong>
+                            </div>
+                            <div style={{ padding: '8px', background: 'rgba(255,255,255,0.1)', borderRadius: '4px' }}>
+                                Route: <strong>{routeOptions.find(r => r.key === selectedRouteKey)?.label}</strong>
+                            </div>
+                        </div>
                     </div>
                 </div>
-
-                {/* Vehicle Stats Display */}
-                <div className="filter-section">
-                    <h3>📊 Live Vehicle Status</h3>
-                    <div style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                        gap: '10px',
-                        marginTop: '10px'
-                    }}>
-                        <div style={{ padding: '8px', background: 'rgba(255,255,255,0.1)', borderRadius: '4px' }}>
-                            Active Vehicles: <strong>{displayedVehicles.length}</strong>
-                        </div>
-                        <div style={{ padding: '8px', background: 'rgba(255,255,255,0.1)', borderRadius: '4px' }}>
-                            Total Passengers: <strong>{displayedVehicles.reduce((sum, v) => sum + v.capacity, 0)}</strong>
-                        </div>
-                        <div style={{ padding: '8px', background: 'rgba(255,255,255,0.1)', borderRadius: '4px' }}>
-                            Route: <strong>{routeOptions.find(r => r.key === selectedRouteKey)?.label}</strong>
-                        </div>
-                    </div>
-                </div>
-
                 <MapContainer
                     center={userLocation || selectedRoute[0].geocode}
                     zoom={12}
                     style={{
-                        height: "500px",
+                        height: "100%",
                         width: "100%",
                         borderRadius: "10px",
                         boxShadow: "0 4px 10px rgba(0,0,0,0.15)"
