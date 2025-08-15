@@ -2,9 +2,10 @@ import './driverPageStyle.css';
 import { useNavigate } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import 'leaflet/dist/leaflet.css';
-import { useState } from 'react';
+import { useState, useEffect} from 'react';
 import 'leaflet-routing-machine';
 import RoutingMachine from './../RoutingMachine';
+import L from "leaflet";
 
 const markersDB = {
     DLSUtoUST: [
@@ -23,13 +24,40 @@ const routeOptions = [
     { label: "SM MOLINO to PITX", key: "SmMolinoToMOA" },
 ];
 
+const VehicleIcon = new L.Icon({
+    iconUrl: "/src/assets/vehicle.png",
+    iconSize: [38,38]
+  })
+
+
+
 function DriverPage() {
+
     const navigate = useNavigate();
     const [selectedRouteKey, setSelectedRouteKey] = useState(routeOptions[0].key);
 
     // Example user location (replace with geolocation if needed)
     const [userLatitude, setUserLatitude] = useState(null);
     const [userLongitude, setUserLongitude] = useState(null);
+
+    const getLocation = () => {
+    const success = (position) =>{
+      setUserLatitude(position.coords.latitude);
+      setUserLongitude(position.coords.longitude);
+    }
+    const error = (err) => {
+      console.error(err);
+    }
+    navigator.geolocation.getCurrentPosition(success, error, {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 0
+    });
+  }
+
+  useEffect(() => {
+    getLocation();
+  }, []);
 
     return (
         <div id="driverApp" className="main-app">
@@ -50,6 +78,13 @@ function DriverPage() {
                                 {routeOptions.map(r => (
                                     <option key={r.key} value={r.key}>{r.label}</option>
                                 ))}
+                            </select>
+                        </div>
+                        <div className="filter-group">
+                            <label>Vehicle Type</label>
+                            <select id="driverStatus">
+                                <option value="Van">Van</option>
+                                <option value="Jeep">Jeeps</option>
                             </select>
                         </div>
                         <div className="filter-group">
@@ -81,7 +116,7 @@ function DriverPage() {
                     <RoutingMachine route={markersDB[selectedRouteKey]} />
 
                     {userLatitude && userLongitude && (
-                        <Marker position={[userLatitude, userLongitude]}>
+                        <Marker position={[userLatitude, userLongitude]} icon={VehicleIcon}>
                             <Popup>Current User Location</Popup>
                         </Marker>
                     )}

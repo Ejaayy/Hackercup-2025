@@ -92,6 +92,8 @@ function CommuterPage() {
             </div>
         </div>
     );
+
+  
 }
 
 export default CommuterPage;
