@@ -1,5 +1,7 @@
 import './driverPageStyle.css';
 import {useNavigate} from 'react-router-dom';
+import {MapContainer, TileLayer, Marker, Popup} from "react-leaflet";
+import 'leaflet/dist/leaflet.css';
 
 function DriverPage() {
     const navigate = useNavigate();
@@ -47,11 +49,18 @@ function DriverPage() {
                         </div>
                     </div>
 
-                    <div class="passenger-requests">
-                        <h3>📋 Passenger Requests Along Route</h3>
-                        <div id="passengerRequests">
-                        </div>
-                    </div>
+                    <MapContainer center={[14.5995, 120.9842]} zoom ={13}>
+                    <TileLayer
+                        attribution={
+                        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>, ' +
+                        '&copy; <a href="https://carto.com/">CARTO</a>'
+                        }
+                        url='https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png'
+                    />
+                    
+                    </MapContainer>
+
+
                 </div>
             </div>
         </>
