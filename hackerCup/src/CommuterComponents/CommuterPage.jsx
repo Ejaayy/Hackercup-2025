@@ -137,7 +137,7 @@ function RouteAndAnimate({ routeWaypoints, vehicles, setVehicles }) {
                 const coords = routeCoordsRef.current;
 
                 // Adjust speed for realism (0.005 is a good starting point)
-                index += 0.005 * direction;
+                index += 0.1 * direction;
 
                 // Check if vehicle has reached the end of the route
                 if (direction === 1 && index >= coords.length - 1) {
@@ -163,7 +163,7 @@ function RouteAndAnimate({ routeWaypoints, vehicles, setVehicles }) {
 
                 return { ...v, index, direction, position: [lat, lng] };
             }));
-        }, 50);
+        }, 800);
 
         return () => clearInterval(interval);
     }, [setVehicles]);
@@ -339,6 +339,11 @@ function CommuterPage() {
                             key={vehicle.id}
                             position={vehicle.position}
                             icon={getVehicleIcon(vehicle.capacity, vehicle.type)}
+                            eventHandlers={{
+                                click: () => {
+                                    console.log("Vehicle clicked:", vehicle);
+                                }
+                            }}
                         >
                             <Popup>
                                 <div style={{ textAlign: 'center', minWidth: '150px' }}>
@@ -366,6 +371,7 @@ function CommuterPage() {
                             </Popup>
                         </Marker>
                     ))}
+
 
                     {/* Route Stop Markers - Clickable with more info */}
                     {selectedRoute.map((marker, idx) => (
