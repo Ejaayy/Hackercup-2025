@@ -22,14 +22,35 @@ const routeOptions = [
     { label: "SM MOLINO to MOA", key: "SmMolinoToMOA" },
 ];
 
-function getVehicleIcon(passengers) {
+function getVehicleIcon(vehicle) {
     return L.divIcon({
         className: "vehicle-icon",
-        html: `<div style="background: rgba(255,0,0,0.8); color: white; border-radius: 50%; width: 38px; height: 38px; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:14px;">${passengers}</div>`,
-        iconSize: [38, 38],
-        iconAnchor: [19, 19],
+        html: `
+            <div style="
+                background: rgba(255,0,0,0.8);
+                color: white;
+                border-radius: 50%;
+                width: 50px;
+                height: 50px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                font-weight: bold;
+                font-size: 12px;
+                line-height: 1.1;
+            ">
+                ${vehicle.type || "V"}<br/>
+                ${vehicle.capacity}/${vehicle.maxCapacity}
+                 ${vehicle.status || "active"}
+            </div>
+        `,
+        iconSize: [50, 50],
+        iconAnchor: [25, 25],
     });
 }
+
 
 // Animate vehicles along the route
 function AnimatedVehicles({ routeWaypoints, vehicles, setVehicles, routeCoordsRef }) {
@@ -88,6 +109,8 @@ function DriverPage() {
     const [users, setUsers] = useState([]);
     const [vehicleMaxCapacity, setVehicleMaxCapacity] = useState(20);
     const routeCoordsRef = useRef([]);
+    const [vehicleType, setVehicleType] = useState("");
+    const [vehicleStatus, setVehicleStatus] = useState("");
 
     // Initialize vehicles
     useEffect(() => {
@@ -175,8 +198,7 @@ function DriverPage() {
                         </div>
                         <div className="filter-group">
                             <label>Vehicle Type</label>
-                            <select id="driverType">
-                                <option value=""></option>
+                            <select id="driverType" value={vehicleType} onChange={(e)=>setVehicleType(e.target.value)}>
                                 <option value="Van">Van</option>
                                 <option value="Jeep">Jeep</option>
                             </select>
@@ -189,7 +211,7 @@ function DriverPage() {
                         </div>
                         <div className="filter-group">
                             <label>📍 Current Status</label>
-                            <select id="driverStatus">
+                            <select id="driverStatus" value={vehicleStatus} onChange={(e)=>setVehicleStatus(e.target.value)}>
                                 <option value="active">🟢 Active</option>
                                 <option value="busy">🟡 Almost Full</option>
                                 <option value="full">🔴 Full</option>
@@ -217,9 +239,22 @@ function DriverPage() {
                     />
 
                     {vehicles.map(v => (
-                        <Marker key={v.id} position={v.position} icon={getVehicleIcon(v.capacity)}>
-                            <Popup>Vehicle ID: {v.id} | Passengers: {v.capacity}</Popup>
+
+                        <Marker 
+                            key={v.id} 
+                            position={v.position} 
+                            icon={getVehicleIcon({...v, maxCapacity: vehicleMaxCapacity, type: vehicleType, status: vehicleStatus})}
+                        >
+                            <Popup>
+                                Vehicle ID: {v.id} <br />
+                                Type: {vehicleType} <br />
+                                Passengers: {v.capacity}/{vehicleMaxCapacity} <br />
+                                Status: {vehicleStatus}
+                            </Popup>
                         </Marker>
+
+                       
+
                     ))}
 
                     {markersDB[selectedRouteKey].map((m, idx) => (
