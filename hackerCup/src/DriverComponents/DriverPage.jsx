@@ -218,6 +218,38 @@ function DriverPage() {
                                 <option value="offline">⚫ Offline</option>
                             </select>
                         </div>
+                        <div className="filter-group">
+                            <label>Current Passengers</label>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '5px' }}>
+                                <button id={"plusButton"}
+                                    onClick={() => {
+                                        setVehicles(prev =>
+                                            prev.map(v =>
+                                                v.id === 0 // assuming driver vehicle has id 0
+                                                    ? { ...v, capacity: Math.max(v.capacity - 1, 0) }
+                                                    : v
+                                            )
+                                        );
+                                    }}
+                                >-</button>
+
+                                <span style={{ minWidth: '30px', textAlign: 'center', fontSize: '30px' }}>
+                                    {vehicles.find(v => v.id === 0)?.capacity || 0}
+                                </span>
+
+                                <button id={"plusButton"}
+                                    onClick={() => {
+                                        setVehicles(prev =>
+                                            prev.map(v =>
+                                                v.id === 0
+                                                    ? { ...v, capacity: Math.min(v.capacity + 1, vehicleMaxCapacity) }
+                                                    : v
+                                            )
+                                        );
+                                    }}
+                                >+</button>
+                            </div>
+                        </div>
 
                     </div>
                 </div>
@@ -240,11 +272,10 @@ function DriverPage() {
                     />
 
                     {vehicles.map(v => (
-
-                        <Marker 
-                            key={v.id} 
-                            position={v.position} 
-                            icon={getVehicleIcon({...v, maxCapacity: vehicleMaxCapacity, type: vehicleType, status: vehicleStatus})}
+                        <Marker
+                            key={`${v.id}-${v.capacity}`} // key changes whenever capacity changes → forces re-render
+                            position={v.position}
+                            icon={getVehicleIcon({ ...v, maxCapacity: vehicleMaxCapacity, type: vehicleType, status: vehicleStatus })}
                         >
                             <Popup>
                                 Vehicle ID: {v.id} <br />
@@ -253,9 +284,6 @@ function DriverPage() {
                                 Status: {vehicleStatus}
                             </Popup>
                         </Marker>
-
-                       
-
                     ))}
 
                     {markersDB[selectedRouteKey].map((m, idx) => (
