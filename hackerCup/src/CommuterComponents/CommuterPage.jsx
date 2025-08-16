@@ -97,7 +97,7 @@ const getUserIcon = () => L.divIcon({
 
 
 // A component to handle both the routing line and the vehicle animation
-function RouteAndAnimate({ routeWaypoints, vehicles, setVehicles }) {
+function RouteAndAnimate({ routeWaypoints, setVehicles }) {
     const map = useMap();
     const routeCoordsRef = useRef([]);
 
