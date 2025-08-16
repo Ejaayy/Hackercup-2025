@@ -53,7 +53,7 @@ function getVehicleIcon(vehicle) {
 
 
 // Animate vehicles along the route
-function AnimatedVehicles({ routeWaypoints, vehicles, setVehicles, routeCoordsRef }) {
+function AnimatedVehicles({ routeWaypoints, setVehicles, routeCoordsRef }) {
     const map = useMap();
 
     useEffect(() => {
