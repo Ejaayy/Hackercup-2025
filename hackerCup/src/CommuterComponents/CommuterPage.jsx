@@ -110,8 +110,6 @@ function RouteAndAnimate({ routeWaypoints, vehicles, setVehicles }) {
             createMarker: () => null,
             routeWhileDragging: false,
             addWaypoints: false,
-            // To prevent the control from showing on the map
-            // Use this if you only want the polyline without the panel
             lineOptions: {
                 styles: [{ color: 'blue', weight: 4, opacity: 0.7 }]
             }
@@ -120,12 +118,26 @@ function RouteAndAnimate({ routeWaypoints, vehicles, setVehicles }) {
         routingControl.on('routesfound', (e) => {
             const route = e.routes[0];
             routeCoordsRef.current = route.coordinates;
-            // Fit map to the new route
+
+            // Initialize vehicle positions along the route when route is found
+            setVehicles(prev => prev.map(v => {
+                if (v.needsInitialPosition && routeCoordsRef.current.length > 0) {
+                    const coords = routeCoordsRef.current;
+                    const safeIndex = Math.min(Math.floor(v.index), coords.length - 1);
+                    return {
+                        ...v,
+                        position: [coords[safeIndex].lat, coords[safeIndex].lng],
+                        needsInitialPosition: false
+                    };
+                }
+                return v;
+            }));
+
             map.fitBounds(route.coordinates.map(c => [c.lat, c.lng]), { padding: [50, 50] });
         });
 
         return () => map.removeControl(routingControl);
-    }, [map, routeWaypoints]);
+    }, [map, routeWaypoints, setVehicles]);
 
     // Animate vehicles along the route
     useEffect(() => {
@@ -133,11 +145,15 @@ function RouteAndAnimate({ routeWaypoints, vehicles, setVehicles }) {
             if (!routeCoordsRef.current.length) return;
 
             setVehicles(prev => prev.map(v => {
+                if (v.needsInitialPosition) return v;
+
                 let { index, direction } = v;
                 const coords = routeCoordsRef.current;
 
-                // Adjust speed for realism (0.005 is a good starting point)
-                index += 0.1 * direction;
+                // Adjust speed for realism (vary speed slightly for each vehicle)
+                const baseSpeed = 0.09;
+                const speedVariation = v.speedMultiplier || 1;
+                index += baseSpeed * direction * speedVariation;
 
                 // Check if vehicle has reached the end of the route
                 if (direction === 1 && index >= coords.length - 1) {
@@ -219,17 +235,29 @@ function CommuterPage() {
         }
     }, []);
 
-    // Initialize vehicles when route changes
+// Initialize vehicles when route changes - scattered along the route
     useEffect(() => {
-        const initialVehicles = Array.from({ length: 6 }, (_, id) => ({
-            id,
-            type: vehicleTypes[Math.floor(Math.random() * vehicleTypes.length)],
-            // Note: position and progress will be set by RouteAndAnimate
-            position: markersDB[selectedRouteKey][0].geocode,
-            index: Math.random() * 10, // Start with a random index along the route
-            direction: Math.random() > 0.5 ? 1 : -1,
-            capacity: Math.floor(Math.random() * 20) + 1, // 1-20 passengers
-        }));
+        const initialVehicles = Array.from({ length: 6 }, (_, id) => {
+            // Create more realistic scattered positions along the route
+            const routeProgress = Math.random(); // 0 to 1
+            const maxRouteIndex = 100; // Assume route has about 100 coordinate points
+            const scatteredIndex = routeProgress * maxRouteIndex;
+
+            return {
+                id,
+                type: vehicleTypes[Math.floor(Math.random() * vehicleTypes.length)],
+                position: markersDB[selectedRouteKey][0].geocode, // Will be updated when route loads
+                index: scatteredIndex,
+                direction: Math.random() > 0.5 ? 1 : -1,
+                capacity: Math.floor(Math.random() * 20) + 1, // 1-20 passengers
+                speedMultiplier: 0.8 + Math.random() * 0.4, // 0.8 to 1.2 speed variation
+                needsInitialPosition: true, // Flag to indicate position needs to be set from route
+                // Add some vehicle-specific info
+                driverName: `Driver ${id + 1}`,
+                licensePlate: `ABC-${(1000 + id).toString()}`,
+                fare: Math.floor(Math.random() * 50) + 15, // 15-65 peso fare
+            };
+        });
         setVehicles(initialVehicles);
     }, [selectedRouteKey]);
 
@@ -346,14 +374,19 @@ function CommuterPage() {
                             }}
                         >
                             <Popup>
-                                <div style={{ textAlign: 'center', minWidth: '150px' }}>
+                                <div style={{ textAlign: 'center', minWidth: '180px' }}>
                                     <strong>
-                                        {vehicle.type === "Van" ? "🚐" : "🚙"}
-                                        {vehicle.type} #{vehicle.id + 1}
+                                        {vehicle.type === "Van" ? "🚐" : "🚙"} {vehicle.type} #{vehicle.id + 1}
                                     </strong>
                                     <hr style={{ margin: '8px 0' }} />
                                     <div style={{ marginBottom: '5px' }}>
-                                        👥 <strong>Passengers:</strong> {vehicle.capacity}
+                                        👥 <strong>Passengers:</strong> {vehicle.capacity} / 20
+                                    </div>
+                                    <div style={{ marginBottom: '5px' }}>
+                                        🧑‍✈️ <strong>Driver:</strong> {vehicle.driverName}
+                                    </div>
+                                    <div style={{ marginBottom: '5px' }}>
+                                        🚘 <strong>Plate:</strong> {vehicle.licensePlate}
                                     </div>
                                     <div style={{ marginBottom: '5px' }}>
                                         📍 <strong>Next Stop:</strong> {selectedRoute[vehicle.direction === 1 ? selectedRoute.length - 1 : 0].popUp.split(',')[0]}
